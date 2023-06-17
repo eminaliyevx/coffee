@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  db-staging:
+    image: postgres:latest
+    networks:
+      - db-staging
+    volumes:
+      - dbstaging:/var/lib/postgresql/data
+    env_file:
+      - .env.staging
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.staging
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db-staging
+    networks:
+      - db-staging
+
+networks:
+  db-staging:
+    driver: bridge
+
+volumes:
+  dbstaging:
